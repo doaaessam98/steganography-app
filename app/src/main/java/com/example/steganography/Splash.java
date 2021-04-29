@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.steganography.register.Registration;
+
 public class Splash extends AppCompatActivity {
     ImageView image;
     TextView text;
@@ -34,7 +36,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(Splash.this, MainActivity.class);
+                Intent mainIntent = new Intent(Splash.this, Registration.class);
                 Splash.this.startActivity(mainIntent);
                 Splash.this.finish();
             }
