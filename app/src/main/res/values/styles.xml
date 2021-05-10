@@ -11,4 +11,16 @@
     <style name="ProgressBarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="colorAccent">#F4F4F4</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!-- remove a default title bar -->
+    <!-- make status bar transparent when navigation bar is on -->
+
 </resources>

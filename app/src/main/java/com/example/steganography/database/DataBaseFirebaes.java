@@ -8,8 +8,11 @@ public class DataBaseFirebaes {
     static String USER_REF = "user";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
     public CollectionReference getUse() {
 
         return db.collection(USER_REF);
     }
+
+
 }

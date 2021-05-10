@@ -1,2 +1,2 @@
 rootProject.name='Steganography'
-include ':app'
+include ':app', ':ImageSteganographyLibrary'
