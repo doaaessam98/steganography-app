@@ -1,9 +1,20 @@
 package com.example.steganography.base;
 
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 
 
-public class BaseViewModel<T> extends ViewModel {
+public class BaseViewModel<T> extends AndroidViewModel {
     public T navigator;
+
+    public BaseViewModel(@NonNull Application application) {
+        super(application);
+    }
+
+
+
+
     // public T nn= (T) new Object();
 }

@@ -9,16 +9,15 @@ import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModel;
 
 abstract public class BaseActivity<VM extends ViewModel, DB extends ViewDataBinding> extends AppCompatActivity {
-    public VM viewModel;
-    public DB databinding;
-    public AppCompatActivity activity;
+    protected VM viewModel;
+    protected DB databinding;
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        activity = this;
-
         databinding = DataBindingUtil.setContentView(this, getLayOut());
         viewModel = initViewModel();
+
 
       /*  viewModel.progress_bar.observe(this, new Observer() {
             @Override

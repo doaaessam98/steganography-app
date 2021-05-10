@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.steganography.register.Registration;
+import com.example.steganography.login.Login;
 
 public class Splash extends AppCompatActivity {
     ImageView image;
@@ -27,20 +27,19 @@ public class Splash extends AppCompatActivity {
         text = findViewById(R.id.text_splash);
         topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animatiom);
         bottomAnim = AnimationUtils.loadAnimation(this, R.anim.bottom_animation);
-        //  topRotet=AnimationUtils.loadAnimation(this,R.anim.top_rotet);
         image.setAnimation(topAnim);
-        // image.setAnimation(topRotet);
+
         text.setAnimation(bottomAnim);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(Splash.this, Registration.class);
+                Intent mainIntent = new Intent(Splash.this, Login.class);
                 Splash.this.startActivity(mainIntent);
                 Splash.this.finish();
             }
-        }, 3000);
+        }, 2000);
 
     }
 }

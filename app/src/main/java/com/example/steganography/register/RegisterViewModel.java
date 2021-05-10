@@ -1,18 +1,20 @@
 package com.example.steganography.register;
 
-import android.os.Build;
+import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.example.steganography.base.BaseViewModel;
+import com.example.steganography.database.DataHolder;
 import com.example.steganography.database.User;
 import com.example.steganography.database.UserDao;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,14 +118,15 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
     public FirebaseAuth auth;
 
-    public RegisterViewModel() {
+    public RegisterViewModel(@NonNull Application application) {
+        super(application);
 
         auth = FirebaseAuth.getInstance();
     }
 
     public static boolean isValidEmail(String str) {
-        boolean isValid = false;
-        if (Build.VERSION.SDK_INT >= 8) {
+        boolean isValid = true;
+        /*if (Build.VERSION.SDK_INT >= 8) {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches();
         }
         String expression = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -132,14 +135,12 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         Matcher matcher = pattern.matcher(inputStr);
         if (matcher.matches()) {
             isValid = true;
-        }
+        }*/
         return isValid;
     }
 
     public void register() {
         Log.e("re", " in register function");
-
-
         if (validDataRegister() == true) {
             progress_bar.set(true);
             Log.e("reg", " valid ");
@@ -158,9 +159,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                         if (task.isSuccessful()) {
                                             Log.e("nnnnn", "email verhication");
 
-                                            //  Toast.makeText(this, "please check email for verification.", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            //Toast.makeText(this, task.getException().getMessage() , Toast.LENGTH_SHORT).show();
                                             Log.e("nnnnn", "cant" + task.getException().getMessage());
 
                                         }
@@ -186,6 +185,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                     public void onComplete(@NonNull Task<Void> task) {
 
                                         if (task.isSuccessful()) {
+                                            // sortUserData();
                                             openMain();
                                             Log.e("nnnnn", "use add to database");
 
@@ -194,6 +194,8 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
                                         }
                                     }
+
+
                                 });
 
                             } else {
@@ -230,7 +232,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
             invalidUserName.set(true);
         }
 
-        if (isValidEmail(userEmail.get())) {
+        if (userEmail.get().isEmpty()) {
             isValid = false;
             invalidUserEmail.set(true);
         }
@@ -280,7 +282,26 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         navigator.openHomeActivity();
     }
 
+    private void sortUserData() {
 
+        UserDao.getUser(auth.getUid(), new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.isSuccessful()) {
+                    User dataBaseUser = task.getResult().toObject(User.class);
+
+                    DataHolder dataHolder = new DataHolder();
+                    dataHolder.dataBaseUser = dataBaseUser;
+                    //dataHolder.authUser=auth.getCurrentUser();
+
+
+                }
+            }
+        });
+
+
+    }
 }
 
 
