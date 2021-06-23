@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    >
 
     <data>
 
-        <variable
-            name="vm"
-            type="com.example.steganography.register.RegisterViewModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/nav_header_height"
-        android:background="@drawable/side_nav_bar"
+        android:background="@drawable/login_background"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="10dp"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="15dp"
+        android:paddingRight="20dp"
         android:weightSum="100">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="100dp"
+
+        <de.hdodenhof.circleimageview.CircleImageView
+
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="60dp"
             android:layout_height="0dp"
-            android:layout_weight="50"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/nav_header_desc"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@drawable/spla" />
+            android:layout_weight="60"
+            android:background="@mipmap/profile_image"
+            app:civ_border_width="2dp" />
+
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:text="@{vm.userEmail}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-        <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{vm.userEmail}" />
+            android:textColor="@color/text_color"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            tools:text="doaa essam"
+
+
+            />
+        <TextView
+            android:id="@+id/textView_user_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:textColor="@color/text_color"
+            tools:text="doaaessam2021@gmail"
+
+            />
 
     </LinearLayout>
 </layout>

@@ -1,4 +1,4 @@
-package com.example.steganography.encode;
+package com.example.steganography.textInImage.encode;
 
 import android.app.Activity;
 import android.app.Application;
@@ -14,21 +14,23 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.ayush.imagesteganographylibrary.Text.AsyncTaskCallback.TextEncodingCallback;
 import com.ayush.imagesteganographylibrary.Text.ImageSteganography;
+import com.ayush.imagesteganographylibrary.Text.TextEncoding;
 import com.example.steganography.base.BaseViewModel;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
     private static final int PICK_IMAGE = 100;
     public ImageView imageView;
     public ObservableField<Uri> imageUrl = new ObservableField<>();
-    public ObservableField<String> user_message = new ObservableField<>("");
-    public ObservableField<String> message_password = new ObservableField<>();
+    public ObservableField<String> user_message = new ObservableField<>(" ");
+    public ObservableField<String> message_password = new ObservableField<>(" ");
     public Bitmap encoded_image;
     public Uri selectedImage;
     ImageSteganography imageSteganography;
@@ -42,13 +44,6 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
     }
 
 
-    public void isPermissionGranted() {
-
-        //return ContextCompat.checkSelfPermission(getApplication(),Manifest.permission.READ_EXTERNAL_STORAGE)
-        //  ==PackageManager.PERMISSION_GRANTED;
-
-    }
-
     public void goToGallery() {
 
         navigator.openGallery();
@@ -60,6 +55,7 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
             switch (requestCode) {
                 case PICK_IMAGE:
                     selectedImage = data.getData();
+                    //imageUrl.postValue(data.getData());
                     try {
                         original_image = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
 
@@ -74,15 +70,12 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
         }
     }
 
-    public void onClick() {
-        final Bitmap imgToSave = encoded_image;
-        if (imgToSave != null) {
+   /* public void savEncodedImage() {
 
-
-            Thread PerformEncoding = new Thread(new Runnable() {
+        Thread PerformEncoding = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    saveImage(imgToSave);
+                    createFileToEncodedImage(encoded_image);
                 }
             });
             save = new ProgressDialog(getApplication());
@@ -92,72 +85,68 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
             save.setCancelable(false);
             save.show();
             PerformEncoding.start();
-        } else {
-            Log.e("error", " image =null");
-        }
-    }
+        }*/
 
 
-    public void encodedTextInImage() {
+    public void encodedTextInImage(Activity activity, TextEncodingCallback textEncodingCallback) {
 
         Log.e("dddddd", "in  encode" + user_message.get());
         Log.e("dddddd", "in  encode" + message_password.get());
 
-        if (imageUrl != null) {
+        if (selectedImage != null) {
             if (user_message.get() != null && message_password.get() != null) {
+                Log.e("eee", "mmm" + user_message.get());
                 imageSteganography = new ImageSteganography(user_message.get().toString(),
                         message_password.get().toString(),
                         original_image);
-                executeEncode();
+                Log.e("eeee", "ddd" + user_message.get());
+                Log.e("eeee", "ddd" + message_password.get());
+                Log.e("eeee", "ddd" + original_image.getWidth());
+
+                TextEncoding textEncoding = new TextEncoding(activity, textEncodingCallback);
+                textEncoding.execute(imageSteganography);
+
             }
 
-        } else {
-            Log.e("dddddd", "image null");
-
         }
 
     }
 
-    private void executeEncode() {
-        navigator.encodeText();
-    }
 
+    public void createFileToEncodedImage(Bitmap bitmap) {
+        Log.e("dddddd", "in view model");
+        FileOutputStream outputStream = null;
+        File Card = Environment.getExternalStorageDirectory();
+        File direct = new File(Card.getAbsolutePath() + "/steganography");
+        direct.mkdir();
+        Log.e("dddddd", "in view model" + direct.mkdir());
 
-    public void saveImage(Bitmap bitmap) {
+        String nameFile = String.format("%d.png", System.currentTimeMillis());
+        Log.e("dddddd", "in view model" + nameFile);
+        Log.e("ddddd", "direct" + direct.getName());
+        Log.e("ddddd", "direct" + direct.getAbsolutePath());
+        Log.e("ddddd", "direct" + direct.canWrite());
+        Log.e("ddddd", "direct" + direct.exists());
 
-        OutputStream output;
-        // Find the SD Card path
-        File filepath = Environment.getExternalStorageDirectory();
-
-        // Create a new folder in SD Card
-        File dir = new File(filepath.getAbsolutePath()
-                + "/WhatSappIMG/");
-        dir.mkdirs();
-
-        // Retrieve the image from the res folder
-        //  BitmapDrawable drawable = (BitmapDrawable) encoded_image.getDrawable();
-        bitmap = encoded_image;
-
-        // Create a name for the saved image
-        File file = new File(dir, "Wallpaper.jpg");
+        File outFile = new File(direct, nameFile);
+        //Toast.makeText(getApplication(), "ok save", Toast.LENGTH_LONG);
         try {
-            output = new FileOutputStream(file);
 
-            // Compress into png format image from 0% - 100%
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-            output.flush();
-            output.close();
-            String url = MediaStore.Images.Media.insertImage(getApplication().getContentResolver(), bitmap,
-                    "Wallpaper.jpg", null);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+            outputStream = new FileOutputStream(outFile);
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            //Toast.makeText(getApplication(), "ok save", Toast.LENGTH_LONG);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
+
 }
-
-
 
 

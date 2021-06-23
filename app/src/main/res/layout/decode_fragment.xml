@@ -1,13 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DecodeFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.steganography.home.decodeHomeFragment.DecodeHomeFragmentViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_margin="30dp"
+        android:orientation="vertical"
+        android:padding="30dp"
+        android:weightSum="100"
 
-</FrameLayout>
+        >
+
+
+        <Button
+            android:id="@+id/open_encode"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="15"
+            android:background="@color/background_bottom_color"
+
+            android:onClick="@{()->vm.goToDecodeTextActivity()}"
+            android:text="Text In Image "
+            android:textColor="@color/text_color"
+            android:textSize="30dp"
+
+
+            />
+
+        <TextView
+            android:id="@+id/open_encode_image_in_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="15"
+            android:background="#47b5be"
+            android:gravity="center"
+            android:onClick="@{()->vm.goToDecodeImageActivity()}"
+            android:text="Image In Image "
+            android:textColor="@color/text_color"
+
+            android:textSize="30dp" />
+
+    </LinearLayout>
+</layout>

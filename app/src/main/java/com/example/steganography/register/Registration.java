@@ -18,7 +18,6 @@ public class Registration extends BaseActivity<RegisterViewModel, ActivityRegist
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityRegistrationBinding databinding = DataBindingUtil.setContentView(this, R.layout.activity_registration);
         databinding.setRegisterViweModel(viewModel);
         viewModel.navigator = this;
         databinding.backArrow.setOnClickListener(new View.OnClickListener() {
@@ -31,16 +30,17 @@ public class Registration extends BaseActivity<RegisterViewModel, ActivityRegist
     }
 
     @Override
+    protected ActivityRegistrationBinding getDataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_registration);
+    }
+
+    @Override
     protected RegisterViewModel initViewModel() {
 
         return new ViewModelProvider(this).get(RegisterViewModel.class);
     }
 
-    @Override
-    protected int getLayOut() {
 
-        return R.layout.activity_registration;
-    }
 
 
     @Override

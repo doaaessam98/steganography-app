@@ -2,6 +2,7 @@ package com.example.steganography.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -25,10 +26,12 @@ public class Login extends BaseActivity<LoginViewModel, ActivityLoginBinding> im
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityLoginBinding databinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         databinding.setLoginViewModel(viewModel);
         viewModel.navigator = this;
+
+
         FacebookSdk.sdkInitialize(Login.this);
+
         databinding.facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,11 +57,19 @@ public class Login extends BaseActivity<LoginViewModel, ActivityLoginBinding> im
     }
 
     @Override
+    protected ActivityLoginBinding getDataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_login);
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        Log.e("message", "on start");
+
         FirebaseUser currentUser = viewModel.auth.getCurrentUser();
         if (currentUser != null) {
+            Log.e("message", "error   not null");
             openHomeActivity();
         }
     }
@@ -81,10 +92,6 @@ public class Login extends BaseActivity<LoginViewModel, ActivityLoginBinding> im
 
     }
 
-    @Override
-    protected int getLayOut() {
-        return R.layout.activity_login;
-    }
 
     @Override
     public void openHomeActivity() {

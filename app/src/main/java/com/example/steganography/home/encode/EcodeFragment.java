@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.steganography.base.BaseFragment;
 import com.example.steganography.databinding.EcodeFragmentBinding;
-import com.example.steganography.encode.EncodeActivity;
+import com.example.steganography.imageInImage.encode.EncodeImageActivity;
+import com.example.steganography.textInImage.encode.EncodeTextActivity;
 
 public class EcodeFragment extends BaseFragment<EcodeViewModel, EcodeFragmentBinding> implements EncodeNavigator {
 
@@ -40,8 +41,15 @@ public class EcodeFragment extends BaseFragment<EcodeViewModel, EcodeFragmentBin
     }
 
     @Override
-    public void openEncodeActivity() {
-        Intent intent = new Intent(this.getContext(), EncodeActivity.class);
+    public void openEncodeTextActivity() {
+        Intent intent = new Intent(this.getContext(), EncodeTextActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void openEncodeImageActivity() {
+        Intent intent = new Intent(this.getContext(), EncodeImageActivity.class);
+        startActivity(intent);
+
     }
 }

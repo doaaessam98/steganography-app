@@ -2,7 +2,9 @@ package com.example.steganography.login;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +14,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.steganography.R;
 import com.example.steganography.base.BaseViewModel;
+import com.example.steganography.database.DataHolder;
+import com.example.steganography.database.User;
+import com.example.steganography.database.UserDao;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,11 +38,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     private static int RC_SIGN_IN = 1;
@@ -51,16 +59,31 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     public LoginManager loginManger;
     public CallbackManager callbackManger;
     public GoogleSignInClient googleSingInClient;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
+
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
 
 
         auth = FirebaseAuth.getInstance();
+        preferences = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+
+
+
+
+
 
         loginManger = LoginManager.getInstance();
         callbackManger = CallbackManager.Factory.create();
+        //  holdData();
+        //pref = getApplicationContext().getSharedPreferences("DataHolder", 0);
+        //editor = pref.edit();
     }
+
 
     public void login() {
         Log.e("reg", "in login");
@@ -73,6 +96,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            holdData();
                             progress_bar.set(false);
                             goToHomeActivity();
                         } else {
@@ -86,7 +110,34 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
     }
 
+    public void holdData() {
 
+        UserDao.getUser(auth.getCurrentUser().getUid(), new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshot) {
+                if (documentSnapshot.isSuccessful()) {
+                    Log.e("message", " login susssssss");
+
+                    User dataBaseUser = documentSnapshot.getResult().toObject(User.class);
+                    Log.e("message", "Zxcvbnm,./" + dataBaseUser.getUser_email());
+
+                    editor.putString("userId", dataBaseUser.getId());
+                    editor.putString("user_name", dataBaseUser.getUser_name());
+                    editor.putString("user_email", dataBaseUser.getUser_email());
+                    editor.apply();
+
+                } else {
+                    Log.e("message", "error" + documentSnapshot.getException().getLocalizedMessage());
+                    Log.e("message", "error" + DataHolder.dataBaseUser.getUser_email());
+
+                }
+
+
+            }
+        });
+
+
+    }
     private void goToHomeActivity() {
         navigator.openHomeActivity();
     }
@@ -176,6 +227,14 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
     }
 
+    public void logout() {
+
+        auth.signOut();
+        // googleSingInClient.signOut();
+        // loginManger.logOut();
+
+
+    }
 
     private void firebaseAuthWithGoogle(Task<GoogleSignInAccount> task, Activity activity) {
 
@@ -191,11 +250,15 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                     progress_bar.set(false);
 
                     if (task.isSuccessful()) {
-
                         FirebaseUser user = auth.getCurrentUser();
+
+                        editor.putString("userId", user.getUid());
+                        editor.putString("user_name", user.getDisplayName());
+                        editor.putString("user_email", user.getEmail());
+                        editor.apply();
                         goToHomeActivity();
                         googleSingInClient.signOut();
-                        //updateUI(user);
+
                     } else {
 
                         Log.e("dddd", "not");
@@ -224,13 +287,20 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 if (object != null) {
                     try {
-
                         String name = object.getString("name");
                         String email = object.getString("email");
                         String fbUserID = object.getString("id");
 
+
+                        editor.putString("userId", fbUserID);
+                        editor.putString("user_name", name);
+                        editor.putString("user_email", email);
+                        editor.apply();
+
                         goToHomeActivity();
                         disconnectFromFacebook();
+
+
                     } catch (JSONException | NullPointerException e) {
                         e.printStackTrace();
                     }

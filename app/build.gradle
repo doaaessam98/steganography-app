@@ -60,10 +60,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     //noinspection GradleCompatible
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     implementation 'com.android.support:multidex:2.0.1'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation 'com.google.android.gms:play-services-auth:$google_auth'
+    //implementation 'com.google.android.gms:play-services-auth:$google_auth'
     implementation project(path: ':ImageSteganographyLibrary')
 
 
