@@ -1,9 +1,8 @@
-package com.example.steganography.encode;
+package com.example.steganography.textInImage.encode;
 
 public interface EncodeActivityNavigator {
 
     public void openGallery();
 
-    public void encodeText();
 
 }

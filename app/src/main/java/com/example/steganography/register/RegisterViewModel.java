@@ -1,10 +1,12 @@
 package com.example.steganography.register;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.steganography.base.BaseViewModel;
 import com.example.steganography.database.DataHolder;
@@ -14,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.regex.Matcher;
@@ -31,97 +34,18 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
     public ObservableField<String> confirmPassword = new ObservableField<>("");
     public ObservableField<Boolean> errorConfirmPassword = new ObservableField<>(false);
     public ObservableField<Boolean> progress_bar = new ObservableField<>(false);
-
-
-
-   /*public ObservableField<String> getUserName() {
-        return userName;
-
-
-   }
-
-    public void setUserName(ObservableField<String> userName) {
-        this.userName = userName;
-    }
-
-    public ObservableField<Boolean> getInvalidUserName() {
-        return invalidUserName;
-    }
-
-    public void setInvalidUserName(ObservableField<Boolean> invalidUserName) {
-        this.invalidUserName = invalidUserName;
-    }
-
-    public ObservableField<String> getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(ObservableField<String> userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public ObservableField<Boolean> getInvalidUserEmail() {
-        return invalidUserEmail;
-    }
-
-    public void setInvalidUserEmail(ObservableField<Boolean> invalidUserEmail) {
-        this.invalidUserEmail = invalidUserEmail;
-    }
-
-    public ObservableField<String> getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(ObservableField<String> userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public ObservableField<Boolean> getInvalidUserPassword() {
-        return invalidUserPassword;
-    }
-
-    public void setInvalidUserPassword(ObservableField<Boolean> invalidUserPassword) {
-        this.invalidUserPassword = invalidUserPassword;
-    }
-
-    public ObservableField<String> getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(ObservableField<String> confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public ObservableField<Boolean> getErrorConfirmPassword() {
-        return errorConfirmPassword;
-    }
-
-    public void setErrorConfirmPassword(ObservableField<Boolean> errorConfirmPassword) {
-        this.errorConfirmPassword = errorConfirmPassword; }*/
-
-
- /*  public RegisterViewModel(ObservableField<String> userName, ObservableField<Boolean> invalidUserName,
-                             ObservableField<String> userEmail, ObservableField<Boolean> invalidUserEmail,
-                             ObservableField<String> userPassword, ObservableField<Boolean> invalidUserPassword,
-                             ObservableField<String> confirmPassword, ObservableField<Boolean> errorConfirmPassword,
-                             FirebaseAuth auth) {
-        this.userName = userName;
-        this.invalidUserName = invalidUserName;
-        this.userEmail = userEmail;
-        this.invalidUserEmail = invalidUserEmail;
-        this.userPassword = userPassword;
-        this.invalidUserPassword = invalidUserPassword;
-        this.confirmPassword = confirmPassword;
-        this.errorConfirmPassword = errorConfirmPassword;
-        this.auth = auth;
-    }*/
-
+    public MutableLiveData<FirebaseUser> authUser = new MutableLiveData<>();
+    User newUser;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     public FirebaseAuth auth;
 
     public RegisterViewModel(@NonNull Application application) {
         super(application);
 
         auth = FirebaseAuth.getInstance();
+        //preferences  = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        //editor = preferences.edit();
     }
 
     public static boolean isValidEmail(String str) {
@@ -166,17 +90,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                     }
                                 });
 
-                               /* if (auth.getCurrentUser().isEmailVerified()) {
-                                    Log.e("nnnnn","email verhication");
-
-                                    auth.getCurrentUser().sendEmailVerification();
-                                    Log.e("nnnnn","email send");
-                                } else {
-                                    Log.e("invalid", "cant verification email");
-
-                                }*/
-
-                                User newUser = new User();
+                                newUser = new User();
                                 newUser.setId(task.getResult().getUser().getUid());
                                 newUser.setUser_name(userName.get());
                                 newUser.setUser_email(userEmail.get());
@@ -185,7 +99,11 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                     public void onComplete(@NonNull Task<Void> task) {
 
                                         if (task.isSuccessful()) {
-                                            // sortUserData();
+                                            DataHolder.dataBaseUser = newUser;
+                                            DataHolder.authUser = auth.getCurrentUser();
+                                            Log.e("message", "error" + DataHolder.dataBaseUser.getUser_email());
+
+
                                             openMain();
                                             Log.e("nnnnn", "use add to database");
 
@@ -211,6 +129,33 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
 
         Log.e("jjjjjjjj", "eeee");
+
+
+    }
+
+    private void holdData() {
+
+        UserDao.getUser(auth.getCurrentUser().getUid(), new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshot) {
+                if (documentSnapshot.isSuccessful()) {
+                    Log.e("message", "error");
+                    User dataBaseUser = documentSnapshot.getResult().toObject(User.class);
+                    editor.putString("userId", dataBaseUser.getId());
+                    editor.putString("user_name", dataBaseUser.getUser_name());
+                    editor.putString("user_email", dataBaseUser.getUser_email());
+                    editor.apply();
+
+
+                } else {
+                    Log.e("message", "error" + documentSnapshot.getException().getLocalizedMessage());
+
+
+                }
+
+
+            }
+        });
 
 
     }

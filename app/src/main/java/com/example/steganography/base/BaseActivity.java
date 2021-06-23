@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModel;
 
@@ -15,7 +14,7 @@ abstract public class BaseActivity<VM extends ViewModel, DB extends ViewDataBind
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        databinding = DataBindingUtil.setContentView(this, getLayOut());
+        databinding = getDataBinding();
         viewModel = initViewModel();
 
 
@@ -27,6 +26,8 @@ abstract public class BaseActivity<VM extends ViewModel, DB extends ViewDataBind
         });*/
 
     }
+
+    protected abstract DB getDataBinding();
 
 /*    ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -49,7 +50,6 @@ abstract public class BaseActivity<VM extends ViewModel, DB extends ViewDataBind
 
     protected abstract VM initViewModel();
 
-    protected abstract int getLayOut();
 
 
 }

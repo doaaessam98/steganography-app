@@ -8,7 +8,6 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
-    <string name="title_activity_home_acivity">HomeAcivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -21,6 +20,11 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+    <string name="encode_text_in_image">Encode text in Image</string>
+    <string name="upload_image">upload image</string>
+    <string name="decode_text_in_image">Decode text in Image</string>
+    <string name="decode">Decode</string>
+    <string name="encode_hint">Type your text to encode ...</string>
 
 
 </resources>

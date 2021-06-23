@@ -1,5 +1,8 @@
 package com.example.steganography.home.encode;
 
 public interface EncodeNavigator {
-    public void openEncodeActivity();
+    void openEncodeTextActivity();
+
+    void openEncodeImageActivity();
+
 }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#008f99</color>
+    <color name="colorPrimaryDark">#007880</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="tab_background_selected">#47b5be</color>
+    <color name="tab_background_unselected">#47b5be</color>
+    <color name="text_color">#F0F3F2</color>
+    <color name="background_bottom_color">#47b5be</color>
+
+    tab_background_selected
 </resources>

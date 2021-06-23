@@ -13,11 +13,18 @@ public class EcodeViewModel extends BaseViewModel<EncodeNavigator> {
         super(application);
     }
 
-    public void openEncodeActivity() {
+    public void openEncodeTextActivity() {
 
-        navigator.openEncodeActivity();
+        navigator.openEncodeTextActivity();
+
 
 
     }
 
+    public void openEncodeImageActivity() {
+
+        navigator.openEncodeImageActivity();
+
+
+    }
 }

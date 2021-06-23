@@ -6,10 +6,6 @@
 
     <item
         android:id="@+id/Menu_AboutUs"
-        android:icon="@drawable/menu2"
         android:title="About US" />
-    <item
-        android:id="@+id/Menu_LogOutMenu"
 
-        android:title="Logout" />
 </menu>

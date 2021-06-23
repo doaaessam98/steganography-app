@@ -3,32 +3,41 @@
     package="com.example.steganography">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".encode.EncodeActivity"></activity>
+        <activity android:name=".imageInImage.encode.EncodeImageActivity" />
+        <activity
+            android:name=".ui.About"
+            android:theme="@style/AppThemeLogin" />
+        <activity
+            android:name=".textInImage.decode.DecodeTextActivity"
+            android:theme="@style/AppThemeLogin" />
+        <activity
+            android:name=".textInImage.encode.EncodeTextActivity"
+            android:theme="@style/AppThemeLogin" />
         <activity android:name=".home.main.MainActivity" />
         <activity
             android:name=".home.HomeActivity"
-            android:label="@string/title_activity_home_acivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".register.Registration"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/AppThemeLogin" />
         <activity
             android:name=".login.Login"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/AppThemeLogin" />
         <activity
             android:name=".Splash"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

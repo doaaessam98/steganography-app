@@ -15,11 +15,15 @@ public class MainActivity extends BaseActivity<Nav_header_ViewModel, ActivityMai
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding dataBinding = DataBindingUtil.setContentView(this, getLayOut());
-
+        databinding.HomePageView.setAdapter(adapter);
         viewModel.navigator = this;
-        dataBinding.HomePageView.setAdapter(adapter);
-        dataBinding.HomeTabs.setupWithViewPager(dataBinding.HomePageView);
+        databinding.HomeTabs.setupWithViewPager(databinding.HomePageView);
+
+    }
+
+    @Override
+    protected ActivityMainBinding getDataBinding() {
+        return DataBindingUtil.setContentView(this, R.layout.activity_main);
 
     }
 
@@ -28,8 +32,4 @@ public class MainActivity extends BaseActivity<Nav_header_ViewModel, ActivityMai
         return new ViewModelProvider(this).get(Nav_header_ViewModel.class);
     }
 
-    @Override
-    protected int getLayOut() {
-        return R.layout.activity_main;
-    }
 }
