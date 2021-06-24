@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1088256461482",
+    "project_id": "setgano",
+    "storage_bucket": "setgano.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088256461482:android:3d790ca3b8ead534b69ed3",
+        "android_client_info": {
+          "package_name": "com.example.steganography"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088256461482-tpdgbuj00f6ju99d1ktk553n31vsmr7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFon65bquYTdIjAN7dXf1CtSj0WsDSgOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088256461482-tpdgbuj00f6ju99d1ktk553n31vsmr7g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
