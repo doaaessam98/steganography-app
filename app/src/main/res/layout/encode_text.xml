@@ -177,14 +177,14 @@
                     android:layout_margin="10dp"
                     android:layout_weight="30"
                     android:background="@drawable/upload_image_background"
-                    android:text="encoded"
+                    android:text="Encode"
                     android:textColor="@color/text_color"
                     android:textSize="20dp"
-
+                    android:textAllCaps="false"
                     />
 
                 <Button
-                    android:id="@+id/shar_button"
+                    android:id="@+id/share_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"

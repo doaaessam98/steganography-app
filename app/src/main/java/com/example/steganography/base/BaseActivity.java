@@ -1,8 +1,11 @@
 package com.example.steganography.base;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModel;
@@ -51,5 +54,15 @@ abstract public class BaseActivity<VM extends ViewModel, DB extends ViewDataBind
     protected abstract VM initViewModel();
 
 
+    public void showMessage(Activity activity, String title, String message, String posActionString,
+                            DialogInterface.OnClickListener posAction,
+                            Boolean isCancelable) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(posActionString, posAction)
+                .setCancelable(isCancelable);
+        builder.show();
+    }
 }
