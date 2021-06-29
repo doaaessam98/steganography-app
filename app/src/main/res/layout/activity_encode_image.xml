@@ -232,7 +232,7 @@
                 android:background="@drawable/upload_image_background"
                 android:drawableRight="@mipmap/share_icon"
                 android:paddingLeft="10dp"
-                android:paddingRight="20dp"
+                android:paddingRight="10dp"
                 android:text="Share"
                 android:textAllCaps="false"
                 android:textColor="@color/text_color"
