@@ -1,17 +1,23 @@
 package com.example.steganography.textInImage.encode;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.databinding.ObservableField;
 
 import com.ayush.imagesteganographylibrary.Text.AsyncTaskCallback.TextEncodingCallback;
@@ -23,6 +29,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.facebook.FacebookSdk.getCacheDir;
 
 public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
@@ -42,6 +53,59 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
 
     }
+
+    void saveToInternalStorage(Bitmap bitmapImage) {
+        OutputStream fOut;
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), "steganography" + ".PNG"); // the File to save ,
+        try {
+            fOut = new FileOutputStream(file);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkAndRequestPermissions(Activity activity) {
+        int permissionWriteStorage = ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int ReadPermission = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (ReadPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(activity, listPermissionsNeeded.toArray(new String[0]), 1);
+        }
+    }
+
+    public Uri getmageToShare(Bitmap bitmap, Activity activity) {
+        File imagefolder = new File(getCacheDir(), "images");
+
+        Uri uri = null;
+        try {
+            imagefolder.mkdirs();
+            File file = new File(imagefolder, "shared_image.png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            uri = FileProvider.getUriForFile(activity, "com.anni.shareimage.fileprovider", file);
+        } catch (Exception e) {
+            Toast.makeText(activity, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return uri;
+    }
+
+
 
 
     public void goToGallery() {
