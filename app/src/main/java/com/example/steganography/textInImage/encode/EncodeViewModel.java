@@ -41,7 +41,7 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
     public ImageView imageView;
     public ObservableField<Uri> imageUrl = new ObservableField<>();
     public ObservableField<String> user_message = new ObservableField<>(" ");
-    public ObservableField<String> message_password = new ObservableField<>(" ");
+    public ObservableField<String> message_password = new ObservableField<>();
     public Bitmap encoded_image;
     public Uri selectedImage;
     ImageSteganography imageSteganography;
@@ -54,22 +54,7 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
     }
 
-    void saveToInternalStorage(Bitmap bitmapImage) {
-        OutputStream fOut;
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "steganography" + ".PNG"); // the File to save ,
-        try {
-            fOut = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
-            fOut.flush(); // Not really required
-            fOut.close(); // do not forget to close the stream
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void checkAndRequestPermissions(Activity activity) {
         int permissionWriteStorage = ContextCompat.checkSelfPermission(activity,

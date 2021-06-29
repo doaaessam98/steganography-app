@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,12 @@ import com.ayush.imagesteganographylibrary.Text.ImageSteganography;
 import com.example.steganography.R;
 import com.example.steganography.base.BaseActivity;
 import com.example.steganography.databinding.EncodeTextBinding;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeTextBinding> implements EncodeActivityNavigator {
     private static final int PICK_IMAGE = 100;
@@ -98,7 +105,7 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
                     Thread PerformEncoding = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            viewModel.saveToInternalStorage(encoded_image);
+                           saveToInternalStorage(encoded_image);
                         }
                     });
 
@@ -119,11 +126,31 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
 
     }
 
+
+
+    void saveToInternalStorage(Bitmap bitmapImage) {
+        OutputStream fOut;
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), "steganography" + ".PNG"); // the File to save ,
+        try {
+            fOut = new FileOutputStream(file);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+            save.dismiss();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
     @Override
     protected EncodeTextBinding getDataBinding() {
         return DataBindingUtil.setContentView(this, R.layout.encode_text);
 
     }
+
 
 
     @Override
@@ -161,9 +188,7 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
 
         // setting type to image
         share.setType("image/png");
-        if (share.getPackage().contains("whatsapp")) {
-            Toast.makeText(this, "yse", Toast.LENGTH_LONG).show();
-        }
+
         // calling startactivity() to share
         startActivity(Intent.createChooser(share, "Share Via"));
     }

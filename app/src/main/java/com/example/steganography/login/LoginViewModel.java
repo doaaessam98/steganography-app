@@ -14,7 +14,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.steganography.R;
 import com.example.steganography.base.BaseViewModel;
-import com.example.steganography.database.DataHolder;
 import com.example.steganography.database.User;
 import com.example.steganography.database.UserDao;
 import com.facebook.AccessToken;
@@ -129,7 +128,6 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
 
                 } else {
                     Log.e("message", "error" + documentSnapshot.getException().getLocalizedMessage());
-                    Log.e("message", "error" + DataHolder.dataBaseUser.getUser_email());
 
                 }
 

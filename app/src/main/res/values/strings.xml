@@ -21,7 +21,7 @@
 
     <string name="home_second">Home Second</string>
     <string name="encode_text_in_image">Encode text in Image</string>
-    <string name="upload_image">Upload image</string>
+    <string name="upload_image">Upload Image</string>
     <string name="decode_text_in_image">Decode text in Image</string>
     <string name="decode">Decode</string>
     <string name="encode_hint">Type your text to encode ...</string>

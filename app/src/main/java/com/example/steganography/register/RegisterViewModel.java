@@ -9,7 +9,6 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.steganography.base.BaseViewModel;
-import com.example.steganography.database.DataHolder;
 import com.example.steganography.database.User;
 import com.example.steganography.database.UserDao;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -99,10 +98,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                     public void onComplete(@NonNull Task<Void> task) {
 
                                         if (task.isSuccessful()) {
-                                            DataHolder.dataBaseUser = newUser;
-                                            DataHolder.authUser = auth.getCurrentUser();
-                                            Log.e("message", "error" + DataHolder.dataBaseUser.getUser_email());
-
 
                                             openMain();
                                             Log.e("nnnnn", "use add to database");
@@ -236,9 +231,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                 if (task.isSuccessful()) {
                     User dataBaseUser = task.getResult().toObject(User.class);
 
-                    DataHolder dataHolder = new DataHolder();
-                    dataHolder.dataBaseUser = dataBaseUser;
-                    //dataHolder.authUser=auth.getCurrentUser();
 
 
                 }
