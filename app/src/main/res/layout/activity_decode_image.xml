@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.steganography.imageInImage.decode.DecodeImageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".imageInImage.decode.DecodeImageActivity">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="12"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Decode Image In Image"
+                        android:textAllCaps="false"
+
+                        android:textColor="@color/text_color"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.Toolbar>
+
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="35"
+                android:adjustViewBounds="true"
+                android:background="@drawable/selected_image_background"
+                android:scaleType="fitXY"
+                android:src="@{vm.decodeImage}"
+
+                />
+
+            <Button
+                android:id="@+id/get_image_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="7"
+                android:background="@drawable/upload_image_background"
+                android:onClick="@{()->vm.openGalleryToPickImage()}"
+                android:padding="5dp"
+                android:text="@string/upload_image"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color"
+                android:textSize="20dp"
+
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="10"
+                android:background="@drawable/text_encode_decode_background"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/background_bottom_color">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="10dp"
+                    android:autoSizeMaxTextSize="40dp"
+                    android:autoSizeMinTextSize="20dp"
+                    android:background="@null"
+                    android:ems="5"
+                    android:hint="password"
+                    android:inputType="textMultiLine"
+                    android:maxLines="5"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:singleLine="true"
+                    android:text="@={vm.password}"
+
+                    android:textColor="#0E0E0E"
+                    android:textSize="15dp"
+                    app:hintTextColor="#090909" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/decodedImageInImage"
+
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="100dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="7"
+                android:background="@drawable/upload_image_background"
+                android:padding="5dp"
+                android:text="Decode"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color"
+                android:textSize="20dp"
+
+                />
+
+
+            <ImageView
+                android:id="@+id/result_image"
+
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="30"
+                android:adjustViewBounds="true"
+                android:background="@drawable/result_image_decoded"
+                android:scaleType="fitXY"
+
+                />
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

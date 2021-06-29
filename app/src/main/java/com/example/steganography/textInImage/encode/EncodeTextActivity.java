@@ -101,6 +101,13 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
 
             }
         });*/
+        databinding.sharButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
         databinding.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +180,7 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
     private void saveToInternalStorage(Bitmap bitmapImage) {
 
 
-        File file = new File(Environment.getExternalStorageDirectory(), "steganography" + ".PNG"); // the File to save ,
+        File file = new File(Environment.getExternalStorageDirectory(), "steganography"); // the File to save ,
         try {
             FileOutputStream out = new FileOutputStream(file);
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, out);

@@ -60,7 +60,7 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
                         original_image = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
 
                         imageUrl.set(selectedImage);
-
+                        //imageUrl.set(Uri.parse(original_image.toString()));
 
                     } catch (IOException e) {
                         Log.i("TAG", "Some exception " + e);

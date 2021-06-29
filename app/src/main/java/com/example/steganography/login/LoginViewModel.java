@@ -91,6 +91,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
         Log.e("reg", "in login" + userPassword.get());
 
         progress_bar.set(true);
+
         auth.signInWithEmailAndPassword(userEmail.get(), userPassword.get())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
