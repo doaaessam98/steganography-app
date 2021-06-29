@@ -175,9 +175,23 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_weight="40"
+                    android:layout_weight="30"
                     android:background="@drawable/upload_image_background"
                     android:text="encoded"
+                    android:textColor="@color/text_color"
+                    android:textSize="20dp"
+
+                    />
+
+                <Button
+                    android:id="@+id/shar_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="30"
+                    android:background="@drawable/upload_image_background"
+                    android:drawableRight="@mipmap/shar_icon"
+                    android:text="share"
                     android:textColor="@color/text_color"
                     android:textSize="20dp"
 
@@ -188,7 +202,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_weight="40"
+                    android:layout_weight="30"
                     android:background="@drawable/upload_image_background"
                     android:text="save"
                     android:textColor="@color/text_color"

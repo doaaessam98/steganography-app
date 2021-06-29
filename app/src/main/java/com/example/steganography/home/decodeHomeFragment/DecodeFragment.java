@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.steganography.base.BaseFragment;
 import com.example.steganography.databinding.DecodeFragmentBinding;
+import com.example.steganography.imageInImage.decode.DecodeImageActivity;
 import com.example.steganography.textInImage.decode.DecodeTextActivity;
 
 public class DecodeFragment extends BaseFragment<DecodeHomeFragmentViewModel, DecodeFragmentBinding> implements DecodeHomeFragmentNavigator {
@@ -48,7 +49,7 @@ public class DecodeFragment extends BaseFragment<DecodeHomeFragmentViewModel, De
 
     @Override
     public void OpenDecodeImageActivity() {
-        Intent intent = new Intent(this.getContext(), DecodeTextActivity.class);
+        Intent intent = new Intent(this.getContext(), DecodeImageActivity.class);
         startActivity(intent);
 
     }

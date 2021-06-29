@@ -72,6 +72,7 @@ public class ImageSteganography {
         this.encrypted_zip = new byte[0];
     }
 
+
     private static String encryptMessage(String message, String secret_key) {
         Log.d(TAG, "Message : " + message);
 
