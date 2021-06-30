@@ -24,7 +24,10 @@ import com.example.steganography.base.BaseActivity;
 import com.example.steganography.databinding.ActivityEncodeImageBinding;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, Acti
         super.onCreate(savedInstanceState);
         databinding.setVmImage(viewModel);
         viewModel.navigator = this;
+        checkAndRequestPermissions();
         databinding.encodeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,11 +80,9 @@ public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, Acti
         databinding.buttonSaveEncodedImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // final Bitmap imgToSave = encoded_image;
                 Thread PerformEncoding = new Thread(new Runnable() {
                     @Override
                     public void run() {
-
 
                         saveToInternalStorage(encoded_image);
                     }
@@ -157,17 +159,18 @@ public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, Acti
     }
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
-
-
-        File file = new File(Environment.getExternalStorageDirectory(), "steganographyImage" + ".PNG"); // the File to save ,
+        OutputStream fOut;
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), "steganographyImage" + ".PNG"); // the File to save ,
         try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
+            fOut = new FileOutputStream(file);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
             save.dismiss();
-
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

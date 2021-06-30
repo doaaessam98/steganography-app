@@ -1,7 +1,10 @@
 package com.example.steganography.textInImage.encode;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,6 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeTextBinding> implements EncodeActivityNavigator {
     private static final int PICK_IMAGE = 100;
@@ -37,7 +44,7 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
         super.onCreate(savedInstanceState);
         databinding.setVm(viewModel);
         viewModel.navigator = this;
-        viewModel.checkAndRequestPermissions(this);
+      checkAndRequestPermissions();
 
         databinding.message.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -78,7 +85,6 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
 
                             encoded_image = result.getEncoded_image();
                             databinding.image.setImageBitmap(encoded_image);
-                            encodedCompleted = true;
                             // databinding.imageNew.setImageBitmap(encoded_image);
                             // whether_encoded.setText("Encoded");
 
@@ -100,49 +106,60 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
         databinding.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (encodedCompleted == true) {
 
-                    Thread PerformEncoding = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                           saveToInternalStorage(encoded_image);
-                        }
-                    });
-
-
-                    save = new ProgressDialog(EncodeTextActivity.this);
-                    save.setMessage("Saving, Please Wait...");
-                    save.setTitle("Saving Image");
-                    save.setIndeterminate(false);
-                    save.setCancelable(false);
-                    save.show();
-                    PerformEncoding.start();
-                } else {
-
-
-                }
+                Thread PerformEncoding = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveToInternalStorage(encoded_image);
+                    }
+                });
+                save = new ProgressDialog(EncodeTextActivity.this);
+                save.setMessage("Saving, Please Wait...");
+                save.setTitle("Saving Image");
+                save.setIndeterminate(false);
+                save.setCancelable(false);
+                save.show();
+                PerformEncoding.start();
             }
         });
-
     }
 
+    public void checkAndRequestPermissions() {
+        int permissionWriteStorage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int ReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (ReadPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), 1);
+        }
+    }
 
-
-    void saveToInternalStorage(Bitmap bitmapImage) {
+    private void saveToInternalStorage(Bitmap bitmapImage) {
         OutputStream fOut;
         File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "steganography" + ".PNG"); // the File to save ,
+                Environment.DIRECTORY_DOWNLOADS), "Encoded" + ".PNG"); // the File to save ,
         try {
             fOut = new FileOutputStream(file);
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
             fOut.flush(); // Not really required
-            fOut.close(); // do not forget to close the stream
-            save.dismiss();
+            fOut.close();
+            save.dismiss();// do not forget to close the stream
+           /* whether_encoded.post(new Runnable() {
+                @Override
+                public void run() {
+                    save.dismiss();
+                }
+            });*/
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-
         }
     }
     @Override

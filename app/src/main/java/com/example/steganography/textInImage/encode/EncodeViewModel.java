@@ -56,21 +56,7 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
 
 
-    public void checkAndRequestPermissions(Activity activity) {
-        int permissionWriteStorage = ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int ReadPermission = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (ReadPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(activity, listPermissionsNeeded.toArray(new String[0]), 1);
-        }
-    }
+
 
     public Uri getmageToShare(Bitmap bitmap, Activity activity) {
         File imagefolder = new File(getCacheDir(), "images");
@@ -162,38 +148,6 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
     }
 
 
-    public void createFileToEncodedImage(Bitmap bitmap) {
-        Log.e("dddddd", "in view model");
-        FileOutputStream outputStream = null;
-        File Card = Environment.getExternalStorageDirectory();
-        File direct = new File(Card.getAbsolutePath() + "/steganography");
-        direct.mkdir();
-        Log.e("dddddd", "in view model" + direct.mkdir());
-
-        String nameFile = String.format("%d.png", System.currentTimeMillis());
-        Log.e("dddddd", "in view model" + nameFile);
-        Log.e("ddddd", "direct" + direct.getName());
-        Log.e("ddddd", "direct" + direct.getAbsolutePath());
-        Log.e("ddddd", "direct" + direct.canWrite());
-        Log.e("ddddd", "direct" + direct.exists());
-
-        File outFile = new File(direct, nameFile);
-        //Toast.makeText(getApplication(), "ok save", Toast.LENGTH_LONG);
-        try {
-
-            outputStream = new FileOutputStream(outFile);
-
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            //Toast.makeText(getApplication(), "ok save", Toast.LENGTH_LONG);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
