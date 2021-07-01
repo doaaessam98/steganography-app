@@ -193,10 +193,11 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
     }
 
     public boolean isValidUsername(String name) {
-        String regex = "^[A-Za-z]\\w{5,10}$";
-        //String regex="^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$";
+        //String regex = "^[A-Za-z]\\w{5,10}$";
+        String regex="^[a-zA-Z0-9]\\w{5,10}+([_ -]?[a-zA-Z0-9])*$";
         Pattern p = Pattern.compile(regex);
         if (name == null) {
+            invalidUserName.set(true);
             return false;
         }
         Matcher m = p.matcher(name);
@@ -210,6 +211,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         Matcher matcher = pattern.matcher(password);
 
         if (password == null) {
+          invalidUserPassword.set(true);
             return false;
         }
         return matcher.matches();

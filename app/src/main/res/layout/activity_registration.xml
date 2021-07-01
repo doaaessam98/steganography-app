@@ -40,7 +40,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-
             >
 
             <ImageView
@@ -48,6 +47,7 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="20"
+                android:layout_marginTop="20dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/circle"
                 android:src="@drawable/image_user_name"
@@ -125,7 +125,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_weight="15"
+                android:layout_weight="11"
                 android:animateLayoutChanges="false"
                 android:animationCache="false"
                 android:focusable="true"
@@ -144,7 +144,8 @@
                     android:drawableEnd="@drawable/ic_user_name"
                     android:drawableRight="@drawable/ic_user_name"
                     android:hint="user_name"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textMultiLine"
+                    android:singleLine="true"
                     android:paddingStart="20dp"
                     android:paddingLeft="20dp"
                     android:paddingEnd="10dp"
@@ -168,7 +169,8 @@
                 android:layout_marginRight="40dp"
                 android:paddingStart="20dp"
                 android:paddingLeft="20dp"
-                android:text=" "
+                android:text="user_must contain at least 5 letter"
+                android:scrollHorizontally="false"
 
                 android:textColor="#EE0038"
                 android:textSize="12dp"
@@ -180,11 +182,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_weight="15"
+                android:layout_weight="6"
                 android:animateLayoutChanges="false"
                 android:animationCache="false"
                 android:focusable="true"
@@ -198,12 +200,21 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="15"
+
                     android:background="@drawable/use_name_backgroung"
                     android:drawableEnd="@drawable/ic_email"
-
+                     android:textAllCaps="false"
+                    android:minLines="1"
+                    android:maxLines="2"
                     android:drawableRight="@drawable/ic_email"
                     android:hint="Email"
                     android:paddingStart="20dp"
+                    android:autoSizeMaxTextSize="40dp"
+                    android:autoSizeMinTextSize="20dp"
+                    android:inputType="textImeMultiLine|textEmailAddress"
+                    android:singleLine="false"
+                    android:ems="5"
+
                     android:paddingLeft="20dp"
                     android:paddingEnd="10dp"
                     android:paddingRight="10dp"
@@ -226,7 +237,7 @@
                 android:text="user name must contain 4 liter and number  at least "
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="italic"
+                android:textStyle="normal"
                 android:visibility="@{registerViweModel.invalidUserEmail?View.VISIBLE:View.GONE}" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -235,7 +246,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_weight="15"
+                android:layout_weight="11"
                 android:animateLayoutChanges="false"
                 android:animationCache="false"
                 android:focusable="true"
@@ -251,7 +262,8 @@
                     android:background="@drawable/use_name_backgroung"
                     android:focusableInTouchMode="true"
                     android:hint="password"
-                    android:inputType="textPassword"
+                    android:inputType="textPassword|textMultiLine"
+                    android:singleLine="true"
                     android:paddingStart="10dp"
 
                     android:paddingLeft="10dp"
@@ -275,7 +287,7 @@
                 android:text="user name must contain 4 liter and number  at least "
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="italic"
+                android:textStyle="normal"
                 android:visibility="@{registerViweModel.invalidUserPassword?View.VISIBLE:View.GONE}" />
 
 
@@ -285,7 +297,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_weight="15"
+                android:layout_weight="11"
                 android:animationCache="false"
                 android:hint="confirm password"
                 app:errorTextColor="#C32121"
@@ -300,10 +312,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/use_name_backgroung"
-                    android:inputType="textPassword"
                     android:paddingStart="10dp"
                     android:paddingLeft="10dp"
-
+                    android:inputType="textPassword|textMultiLine"
+                    android:singleLine="true"
                     android:text="@={registerViweModel.confirmPassword}"
                     android:textColor="@android:color/white"
 
@@ -320,26 +332,31 @@
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="50dp"
                 android:hint="password"
                 android:paddingStart="20dp"
                 android:paddingLeft="20dp"
                 android:text="user name must contain 4 liter and number  at least "
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="italic"
+                android:textStyle="normal"
                 android:visibility="@{registerViweModel.errorConfirmPassword?View.VISIBLE:View.GONE}" />
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
+                android:layout_marginStart="60dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="60dp"
                 android:layout_weight="10"
-                android:adjustViewBounds="true"
-                android:background="@drawable/register_button_background"
+                android:background="@drawable/use_name_backgroung"
+                android:backgroundTint="@android:color/white"
+                android:text="Register"
                 android:onClick="@{()->registerViweModel.register()}"
-                android:src="@drawable/regisster_botton" />
+
+                android:textColor="#007880"
+                android:textSize="20dp" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
