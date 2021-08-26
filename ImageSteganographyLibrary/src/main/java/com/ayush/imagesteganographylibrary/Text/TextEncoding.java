@@ -37,16 +37,22 @@ public class TextEncoding extends AsyncTask<ImageSteganography, Integer, ImageSt
     //pre execution of method
     @Override
     protected void onPreExecute() {
+
         super.onPreExecute();
 
         //setting parameters of progress dialog
+
         if (progressDialog != null) {
             progressDialog.setMessage("Loading, Please Wait...");
             progressDialog.setTitle("Encoding Message");
             progressDialog.setIndeterminate(false);
             progressDialog.setCancelable(false);
+
             progressDialog.show();
         }
+        callbackInterface.onStartTextEncoding(progressDialog);
+
+
     }
 
     @Override
@@ -60,6 +66,7 @@ public class TextEncoding extends AsyncTask<ImageSteganography, Integer, ImageSt
 
         //Sending result to callback interface
         callbackInterface.onCompleteTextEncoding(result);
+
     }
 
     @Override

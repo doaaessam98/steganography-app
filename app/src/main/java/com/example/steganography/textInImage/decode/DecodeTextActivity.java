@@ -1,9 +1,11 @@
 package com.example.steganography.textInImage.decode;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -18,7 +20,7 @@ import com.example.steganography.databinding.ActivityDecodeBinding;
 public class DecodeTextActivity extends BaseActivity<DecodeViewModel, ActivityDecodeBinding> implements DecodeNavigator {
 
     private static final int PICK_IMAGE = 100;
-
+    String resultMessage;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +44,12 @@ public class DecodeTextActivity extends BaseActivity<DecodeViewModel, ActivityDe
 
 
                     @Override
-                    public void onStartTextEncoding() {
+                    public void onStartTextDecoding(ProgressDialog progressDialog) {
 
                     }
 
                     @Override
-                    public void onCompleteTextEncoding(ImageSteganography result) {
+                    public void onCompleteTextDecoding(ImageSteganography result) {
 
                         Log.e("llll", "lll" + result.getSecret_key());
                         Log.e("llll", "lll" + result.getMessage());
@@ -58,18 +60,27 @@ public class DecodeTextActivity extends BaseActivity<DecodeViewModel, ActivityDe
 
                             Log.e("llll", "lll" + result.getSecret_key().toString());
                             Log.e("llll", "lll" + result.isSecretKeyWrong());
-                            if (!result.isDecoded())
-                                databinding.whetherDecoded.setText("No message found");
-                            else {
+                            if (!result.isDecoded()) {
+
+                                Toast.makeText(DecodeTextActivity.this, "No message found", Toast.LENGTH_LONG).show();
+
+                                //databinding.whetherDecoded.setText("No message found");
+                            } else {
                                 if (!result.isSecretKeyWrong()) {
-                                    databinding.whetherDecoded.setText("Decoded");
-                                    databinding.decodeMessage.setText("" + result.getMessage());
+                                    resultMessage = result.getMessage();
+                                    openMessageActivity();
+                                    // databinding.whetherDecoded.setText("Decoded");
+                                    // databinding.decodeMessage.setText("" + result.getMessage());
+
                                 } else {
-                                    databinding.whetherDecoded.setText("Wrong secret key");
+                                    Toast.makeText(DecodeTextActivity.this, "Wrong secret key", Toast.LENGTH_LONG).show();
+                                    // databinding.whetherDecoded.setText("Wrong secret key");
                                 }
                             }
                         } else {
-                            databinding.whetherDecoded.setText("Select Image First");
+                            Toast.makeText(DecodeTextActivity.this, "Select Image First", Toast.LENGTH_LONG).show();
+
+                            // databinding.whetherDecoded.setText("Select Image First");
                         }
 
                     }
@@ -78,6 +89,15 @@ public class DecodeTextActivity extends BaseActivity<DecodeViewModel, ActivityDe
             }
         });
     }
+
+    private void openMessageActivity() {
+
+
+        Intent intent = new Intent(DecodeTextActivity.this, DecodedMessage.class);
+        intent.putExtra("decode_message", resultMessage);
+        startActivity(intent);
+    }
+
 
     @Override
     protected ActivityDecodeBinding getDataBinding() {

@@ -1,5 +1,7 @@
 package com.ayush.imagesteganographylibrary.Text.AsyncTaskCallback;
 
+import android.app.ProgressDialog;
+
 import com.ayush.imagesteganographylibrary.Text.ImageSteganography;
 
 /**
@@ -8,8 +10,8 @@ import com.ayush.imagesteganographylibrary.Text.ImageSteganography;
 
 public interface TextDecodingCallback {
 
-    void onStartTextEncoding();
+    void onStartTextDecoding(ProgressDialog progressDialog);
 
-    void onCompleteTextEncoding(ImageSteganography result);
+    void onCompleteTextDecoding(ImageSteganography result);
 
 }

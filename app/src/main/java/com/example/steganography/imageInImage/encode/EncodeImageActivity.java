@@ -1,19 +1,15 @@
 package com.example.steganography.imageInImage.encode;
 
-import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,18 +19,11 @@ import com.example.steganography.R;
 import com.example.steganography.base.BaseActivity;
 import com.example.steganography.databinding.ActivityEncodeImageBinding;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, ActivityEncodeImageBinding> implements navigator {
-    Bitmap encoded_image;
+    private static final String CHANNEL_ID = " encode";
     private ProgressDialog save;
-
+    Boolean isEncodedComplete = false;
+    Bitmap encoded_image;
     // static final int PICK_HIDDEN_IMAGE = 200;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,62 +31,113 @@ public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, Acti
         databinding.setVmImage(viewModel);
         viewModel.navigator = this;
         checkAndRequestPermissions();
+   /* databinding.encodeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.encodedTextInImage();
+                databinding.resultEncodeImage.setImageBitmap(viewModel.result);
+                encoded_image=viewModel.result;
+
+            }
+        });*/
+        databinding.buttonSaveEncodedImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isEncodedComplete == true) {
+                    saveEncodeImage();
+
+                } else {
+
+                    showMessage(EncodeImageActivity.this, null, "please Encode image first", "ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
+        databinding.buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isEncodedComplete == true) {
+                    shareImageEncodedText(encoded_image);
+                } else {
+
+                    showMessage(EncodeImageActivity.this, null, "please Encode image first", "ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            }
+        });
+
         databinding.encodeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+               /* showMessage(EncodeImageActivity.this, null, "must be connecting to network", "ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+       }
+                });*/
                 viewModel.encodedTextInImage(EncodeImageActivity.this, new TextEncodingCallback() {
                     @Override
-                    public void onStartTextEncoding() {
+                    public void onStartTextEncoding(ProgressDialog progressDialog) {
+
 
                     }
 
                     @Override
                     public void onCompleteTextEncoding(ImageSteganography result) {
-
-
                         if (result != null && result.isEncoded()) {
                             Log.e("dddd", "tttt" + result.getMessage().toString());
                             Log.e("dddd", "tttt" + result.getEncrypted_message());
                             Log.e("dddd", "tttt" + result.getSecret_key());
-                            Log.e("dddd", "tttt" + result.isEncoded());
-                            Toast.makeText(getApplication(), "ok", Toast.LENGTH_LONG).show();
-
-
+                            Log.e("dddd", "tttt" + result.getImage());
+                            Log.e("dddd", "tttt" + result.getEncoded_image());
+                            Log.e("dddd", "ok");
+                            Toast.makeText(getApplication(), "Encode Successfully", Toast.LENGTH_SHORT).show();
                             encoded_image = result.getEncoded_image();
                             databinding.resultEncodeImage.setImageBitmap(encoded_image);
-                            // databinding.imageNew.setImageBitmap(encoded_image);
-                            // whether_encoded.setText("Encoded");
+                            isEncodedComplete = true;
 
-                            //Toast.makeText(getApplication(), "encoded", Toast.LENGTH_LONG).show();
                         }
 
                     }
                 });
+
+
             }
         });
+    }
+
+    private void saveEncodeImage() {
 
 
-        databinding.buttonSaveEncodedImage.setOnClickListener(new View.OnClickListener() {
+        Thread PerformEncoding = new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Thread PerformEncoding = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+            public void run() {
+                saveImage(encoded_image, save, "/imageSteganography", EncodeImageActivity.this);
 
-                        saveToInternalStorage(encoded_image);
-                    }
-                });
-                save = new ProgressDialog(EncodeImageActivity.this);
-                save.setMessage("Saving, Please Wait...");
-                save.setTitle("Saving Image");
-                save.setIndeterminate(false);
-                save.setCancelable(false);
-                save.show();
-                PerformEncoding.start();
+
             }
         });
+        save = new ProgressDialog(EncodeImageActivity.this);
+        save.setMessage("Saving, Please Wait...");
+        save.setTitle("Saving Image");
+        save.setIndeterminate(false);
+        save.setCancelable(false);
+        save.show();
+        PerformEncoding.start();
+        Toast.makeText(this, "save in /storage/ emulated/0/ImageSteganography", Toast.LENGTH_LONG).show();
 
     }
+
+
 
 
     @Override
@@ -142,36 +182,15 @@ public class EncodeImageActivity extends BaseActivity<EncodeImageViewModel, Acti
 
     }
 
-    private void checkAndRequestPermissions() {
-        int permissionWriteStorage = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int ReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (ReadPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), 1);
-        }
-    }
 
-    private void saveToInternalStorage(Bitmap bitmapImage) {
-        OutputStream fOut;
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "steganographyImage" + ".PNG"); // the File to save ,
-        try {
-            fOut = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
-            fOut.flush(); // Not really required
-            fOut.close(); // do not forget to close the stream
-            save.dismiss();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void showErrorMessage() {
+        showMessage(this, null, viewModel.string_error, "ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
     }
 }

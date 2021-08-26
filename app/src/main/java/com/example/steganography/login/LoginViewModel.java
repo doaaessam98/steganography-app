@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -32,9 +33,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,14 +49,16 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import static android.service.controls.ControlsProviderService.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     private static int RC_SIGN_IN = 1;
     public ObservableField<String> userPassword = new ObservableField<>("");
-    public ObservableField<Boolean> invalidUserName = new ObservableField<>(false);
     public ObservableField<String> userEmail = new ObservableField<>("");
-    public ObservableField<Boolean> invalidUserEmail = new ObservableField<>(false);
+    public ObservableField<String> textPasswordError = new ObservableField<>("");
+    public ObservableField<String> textEmailError = new ObservableField<>("");
+
     public MutableLiveData<FirebaseUser> authUser = new MutableLiveData<>();
     public ObservableField<Boolean> progress_bar = new ObservableField<>(false);
     public FirebaseAuth auth;
@@ -60,7 +67,8 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
     public GoogleSignInClient googleSingInClient;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-
+    FirebaseException e;
+    String error_message;
 
 
     public LoginViewModel(@NonNull Application application) {
@@ -89,27 +97,153 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
         Log.e("reg", "in login" + userEmail.get());
         Log.e("reg", "in login" + userPassword.get());
 
-        progress_bar.set(true);
+        if (validDataToLogin()) {
+            progress_bar.set(true);
 
-        auth.signInWithEmailAndPassword(userEmail.get(), userPassword.get())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            holdData();
-                            progress_bar.set(false);
-                            goToHomeActivity();
-                        } else {
-                            Log.e("reg", "not  " + task.getException().getLocalizedMessage());
+            auth.signInWithEmailAndPassword(userEmail.get(), userPassword.get())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+
+
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = auth.getCurrentUser();
+
+                                holdData();
+                                progress_bar.set(false);
+                                goToHomeActivity();
+                            }
+                            if (!task.isSuccessful()) {
+                                progress_bar.set(false);
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseNetworkException e) {
+                                    error_message = "network error";
+                                    showMessage();
+
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    textPasswordError.set("invalid email or password");
+
+                                    showMessage();
+
+                                } catch (FirebaseAuthUserCollisionException e) {
+                                    error_message = "in valid user";
+                                    //mTxtEmail.setError(getString(R.string.error_user_exists));
+                                    showMessage();
+
+                                } catch (Exception e) {
+                                    error_message = e.getMessage();
+                                    showMessage();
+                                }
+
+
+                            }
+
+
                         }
-                    }
 
 
-                });
+                    });
+
+
+        } else {
+
+
+        }
+    }
+
+
+    public void restPassword() {
+        if (!userEmail.get().toString().isEmpty()) {
+            auth.sendPasswordResetEmail(userEmail.get().toString())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Email sent.");
+                            }
+                            if (!task.isSuccessful()) {
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseNetworkException e) {
+                                    error_message = "network error";
+                                    showMessage();
+
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    textPasswordError.set("invalid email or password");
+
+                                    showMessage();
+
+                                } catch (FirebaseAuthUserCollisionException e) {
+                                    error_message = "in valid user";
+                                    //mTxtEmail.setError(getString(R.string.error_user_exists));
+                                    showMessage();
+
+                                } catch (Exception e) {
+                                    error_message = e.getMessage();
+                                    showMessage();
+                                }
+
+
+                            }
+                        }
+                    });
+
+        } else {
+
+            error_message = "enter your email to rest password";
+            showMessage();
+        }
 
 
     }
 
+    private void showMessage() {
+        navigator.showDialogMessage();
+    }
+
+    private boolean validDataToLogin() {
+
+        boolean isValid = true;
+        if (validateEmail() == false) {
+            isValid = false;
+
+        }
+        if (isValidPassword() == false) {
+            isValid = false;
+
+
+        }
+        return isValid;
+    }
+
+    private boolean validateEmail() {
+        if (userEmail.get().isEmpty()) {
+            textEmailError.set("Email cant be empty");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(userEmail.get()).matches()) {
+            textEmailError.set("Please enter a valid email address");
+
+            return false;
+        } else {
+            textEmailError.set("");
+            return true;
+        }
+    }
+
+    public boolean isValidPassword() {
+
+
+        if (userPassword.get().isEmpty()) {
+            textPasswordError.set("password can not be empty");
+            return false;
+        } else {
+            textPasswordError.set("");
+            return true;
+        }
+
+
+    }
     public void holdData() {
 
         UserDao.getUser(auth.getCurrentUser().getUid(), new OnCompleteListener<DocumentSnapshot>() {
@@ -117,6 +251,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
             public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshot) {
                 if (documentSnapshot.isSuccessful()) {
                     Log.e("message", " login susssssss");
+                    FirebaseUser user = auth.getCurrentUser();
 
                     User dataBaseUser = documentSnapshot.getResult().toObject(User.class);
                     Log.e("message", "Zxcvbnm,./" + dataBaseUser.getUser_email());
@@ -188,7 +323,7 @@ public class LoginViewModel extends BaseViewModel<LoginNavigator> {
                         .Callback() {
                     @Override
                     public void onCompleted(GraphResponse graphResponse) {
-                        LoginManager.getInstance().logOut();
+                        //  LoginManager.getInstance().logOut();
                     }
                 })
                 .executeAsync();

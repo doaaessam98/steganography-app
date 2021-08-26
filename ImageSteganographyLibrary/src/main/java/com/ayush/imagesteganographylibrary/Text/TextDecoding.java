@@ -52,6 +52,7 @@ public class TextDecoding extends AsyncTask<ImageSteganography, Void, ImageStega
             progressDialog.show();
 
         }
+        textDecodingCallback.onStartTextDecoding(progressDialog);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class TextDecoding extends AsyncTask<ImageSteganography, Void, ImageStega
             progressDialog.dismiss();
 
         //sending result to callback
-        textDecodingCallback.onCompleteTextEncoding(result);
+        textDecodingCallback.onCompleteTextDecoding(result);
     }
 
     @Override

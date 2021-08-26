@@ -1,5 +1,6 @@
 package com.example.steganography.login;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +73,19 @@ public class Login extends BaseActivity<LoginViewModel, ActivityLoginBinding> im
             Log.e("message", "error   not null");
             openHomeActivity();
         }
+    }
+
+    @Override
+    public void showDialogMessage() {
+        showMessage(this, "message", "" + viewModel.error_message, "ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+                dialog.cancel();
+
+            }
+        });
     }
 
     @Override

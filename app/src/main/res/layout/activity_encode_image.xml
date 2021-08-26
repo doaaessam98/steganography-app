@@ -75,7 +75,6 @@
                 android:layout_weight="50"
                 android:background="@drawable/selected_image_background"
                 android:scaleType="fitXY"
-
                 android:src="@{vmImage.hiddenImageUrl}" />
 
 
@@ -194,9 +193,9 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="25"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
-            android:background="@drawable/result_encoded_image"
-            android:scaleType="fitXY" />
+            android:src="@drawable/result_encoded_image" />
 
         <LinearLayout
             android:layout_width="match_parent"

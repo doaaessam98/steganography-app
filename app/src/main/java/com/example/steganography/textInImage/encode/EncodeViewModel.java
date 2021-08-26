@@ -1,23 +1,16 @@
 package com.example.steganography.textInImage.encode;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.databinding.ObservableField;
 
 import com.ayush.imagesteganographylibrary.Text.AsyncTaskCallback.TextEncodingCallback;
@@ -25,58 +18,26 @@ import com.ayush.imagesteganographylibrary.Text.ImageSteganography;
 import com.ayush.imagesteganographylibrary.Text.TextEncoding;
 import com.example.steganography.base.BaseViewModel;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.facebook.FacebookSdk.getCacheDir;
 
 public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
 
     private static final int PICK_IMAGE = 100;
     public ImageView imageView;
     public ObservableField<Uri> imageUrl = new ObservableField<>();
-    public ObservableField<String> user_message = new ObservableField<>(" ");
+    public ObservableField<String> user_message = new ObservableField<>();
     public ObservableField<String> message_password = new ObservableField<>();
     public Bitmap encoded_image;
     public Uri selectedImage;
     ImageSteganography imageSteganography;
     private ProgressDialog save;
     private Bitmap original_image;
-
+    String textEncodeErrorMessage;
     public EncodeViewModel(@NonNull Application application) {
         super(application);
 
 
     }
-
-
-
-
-
-    public Uri getmageToShare(Bitmap bitmap, Activity activity) {
-        File imagefolder = new File(getCacheDir(), "images");
-
-        Uri uri = null;
-        try {
-            imagefolder.mkdirs();
-            File file = new File(imagefolder, "shared_image.png");
-            FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            uri = FileProvider.getUriForFile(activity, "com.anni.shareimage.fileprovider", file);
-        } catch (Exception e) {
-            Toast.makeText(activity, "" + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return uri;
-    }
-
-
 
 
     public void goToGallery() {
@@ -93,9 +54,8 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
                     //imageUrl.postValue(data.getData());
                     try {
                         original_image = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), selectedImage);
-
                         imageUrl.set(selectedImage);
-                        //imageUrl.set(Uri.parse(original_image.toString()));
+
 
                     } catch (IOException e) {
                         Log.i("TAG", "Some exception " + e);
@@ -105,49 +65,39 @@ public class EncodeViewModel extends BaseViewModel<EncodeActivityNavigator> {
         }
     }
 
-   /* public void savEncodedImage() {
-
-        Thread PerformEncoding = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    createFileToEncodedImage(encoded_image);
-                }
-            });
-            save = new ProgressDialog(getApplication());
-            save.setMessage("Saving, Please Wait...");
-            save.setTitle("Saving Image");
-            save.setIndeterminate(false);
-            save.setCancelable(false);
-            save.show();
-            PerformEncoding.start();
-        }*/
-
 
     public void encodedTextInImage(Activity activity, TextEncodingCallback textEncodingCallback) {
 
-        Log.e("dddddd", "in  encode" + user_message.get());
-        Log.e("dddddd", "in  encode" + message_password.get());
-
         if (selectedImage != null) {
-            if (user_message.get() != null && message_password.get() != null) {
-                Log.e("eee", "mmm" + user_message.get());
-                imageSteganography = new ImageSteganography(user_message.get().toString(),
-                        message_password.get().toString(),
-                        original_image);
-                Log.e("eeee", "ddd" + user_message.get());
-                Log.e("eeee", "ddd" + message_password.get());
-                Log.e("eeee", "ddd" + original_image.getWidth());
+            if (user_message.get() != null) {
+                if (message_password.get() != null) {
+                    imageSteganography = new ImageSteganography(user_message.get().toString(),
+                            message_password.get().toString(), original_image);
 
-                TextEncoding textEncoding = new TextEncoding(activity, textEncodingCallback);
-                textEncoding.execute(imageSteganography);
+                    TextEncoding textEncoding = new TextEncoding(activity, textEncodingCallback);
+                    textEncoding.execute(imageSteganography);
 
+                } else {
+                    textEncodeErrorMessage = "password is empty";
+                    showMessage();
+                }
+            } else {
+                textEncodeErrorMessage = "please enter message to encoded";
+                showMessage();
             }
 
+        } else {
+            textEncodeErrorMessage = "please selected image first";
+
+            showMessage();
         }
+
 
     }
 
-
+    private void showMessage() {
+        navigator.showErrorMessage();
+    }
 
 
 }

@@ -119,7 +119,7 @@
                 android:gravity="center_vertical" />
 
             <com.google.android.material.textfield.TextInputLayout
-
+                android:id="@+id/text_input_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
@@ -130,12 +130,15 @@
                 android:animationCache="false"
                 android:focusable="true"
                 app:errorEnabled="true"
+
+                app:boxStrokeErrorColor="#EF0932"
+                app:errorTextColor="@color/colorPrimaryDark"
                 app:errorTextAppearance="@android:color/white"
                 app:hintTextColor="@android:color/white"
                 app:passwordToggleTint="@android:color/white">
 
-                <EditText
-                    android:id="@+id/use_name"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/use_name_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -163,33 +166,31 @@
                 android:id="@+id/invalid_use_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginRight="70dp"
                 android:paddingStart="20dp"
                 android:paddingLeft="20dp"
-                android:text="user_must contain at least 5 letter"
+                android:text="@{registerViweModel.textUserNameError}"
                 android:scrollHorizontally="false"
 
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="italic"
-                android:visibility="@{registerViweModel.invalidUserName?View.VISIBLE:View.GONE}"
+                android:textStyle="normal"
 
 
                 />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
-                android:layout_weight="6"
+                android:layout_weight="11"
                 android:animateLayoutChanges="false"
                 android:animationCache="false"
-                android:focusable="true"
 
                 app:hintTextColor="@android:color/white"
                 app:passwordToggleTint="@android:color/white">
@@ -199,21 +200,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="15"
 
                     android:background="@drawable/use_name_backgroung"
                     android:drawableEnd="@drawable/ic_email"
                      android:textAllCaps="false"
-                    android:minLines="1"
-                    android:maxLines="2"
                     android:drawableRight="@drawable/ic_email"
                     android:hint="Email"
                     android:paddingStart="20dp"
-                    android:autoSizeMaxTextSize="40dp"
-                    android:autoSizeMinTextSize="20dp"
-                    android:inputType="textImeMultiLine|textEmailAddress"
-                    android:singleLine="false"
-                    android:ems="5"
+                    android:inputType="textMultiLine|textEmailAddress"
+                    android:singleLine="true"
 
                     android:paddingLeft="20dp"
                     android:paddingEnd="10dp"
@@ -228,18 +223,15 @@
                 android:id="@+id/invalid_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginRight="70dp"
                 android:paddingLeft="20dp"
-
-                android:text="user name must contain 4 liter and number  at least "
+                android:text="@{registerViweModel.textUserEmailError}"
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="normal"
-                android:visibility="@{registerViweModel.invalidUserEmail?View.VISIBLE:View.GONE}" />
-
+                android:textStyle="normal" />
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -278,18 +270,15 @@
                 android:id="@+id/invalid_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
-                android:paddingStart="20dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginRight="70dp"
                 android:paddingLeft="20dp"
-                android:text="user name must contain 4 liter and number  at least "
+                android:text="@{registerViweModel.textPasswordError}"
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="normal"
-                android:visibility="@{registerViweModel.invalidUserPassword?View.VISIBLE:View.GONE}" />
-
+                android:textStyle="normal" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -328,20 +317,18 @@
                 android:layout_width="match_parent"
 
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginLeft="50dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginLeft="80dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginRight="50dp"
                 android:hint="password"
                 android:paddingStart="20dp"
                 android:paddingLeft="20dp"
-                android:text="user name must contain 4 liter and number  at least "
+                android:text="@{registerViweModel.textConfirmPasswordError}"
                 android:textColor="#EE0038"
                 android:textSize="12dp"
-                android:textStyle="normal"
-                android:visibility="@{registerViweModel.errorConfirmPassword?View.VISIBLE:View.GONE}" />
-
+                android:textStyle="normal" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

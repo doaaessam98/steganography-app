@@ -1,21 +1,15 @@
 package com.example.steganography.textInImage.encode;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,20 +19,13 @@ import com.example.steganography.R;
 import com.example.steganography.base.BaseActivity;
 import com.example.steganography.databinding.EncodeTextBinding;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeTextBinding> implements EncodeActivityNavigator {
     private static final int PICK_IMAGE = 100;
     Bitmap encoded_image;
     ImageView encoded;
-    private ProgressDialog save;
     Boolean encodedCompleted = false;
+    private ProgressDialog save;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,20 +41,22 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
                     databinding.message.setHint(R.string.encode_hint);
             }
         });
-        databinding.password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+       /* databinding.password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus)
                     databinding.password.setHint("");
                 else
                     databinding.password.setHint("password");
             }
-        });
+        });*/
         databinding.encodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewModel.encodedTextInImage(EncodeTextActivity.this, new TextEncodingCallback() {
                     @Override
-                    public void onStartTextEncoding() {
+                    public void onStartTextEncoding(ProgressDialog progressDialog) {
+
+
 
                     }
 
@@ -78,17 +67,18 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
                         if (result != null && result.isEncoded()) {
                             Log.e("on complete", "message" + result.getMessage().toString());
                             Log.e("on complete", "message" + result.getEncrypted_message());
-                            Log.e("on complete", "password" + result.getSecret_key());
-                            Log.e("on complete", "tttt" + result.isEncoded());
-                            Toast.makeText(getApplication(), "ok", Toast.LENGTH_LONG).show();
+                            Log.e("on complete", "" + result.getSecret_key());
+                            Log.e("on complete", "" + result.isEncoded());
+                            Toast.makeText(getApplication(), "Encode Successfully", Toast.LENGTH_SHORT).show();
 
 
                             encoded_image = result.getEncoded_image();
                             databinding.image.setImageBitmap(encoded_image);
-                            // databinding.imageNew.setImageBitmap(encoded_image);
-                            // whether_encoded.setText("Encoded");
 
-                            //Toast.makeText(getApplication(), "encoded", Toast.LENGTH_LONG).show();
+                            encodedCompleted = true;
+                            saveEncodeTextImage();
+
+
                         }
 
                     }
@@ -99,69 +89,63 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
         databinding.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                shareImageandText(encoded_image);
+                sharEncodedImage();
             }
         });
-        databinding.saveButton.setOnClickListener(new View.OnClickListener() {
+
+
+    }
+
+
+    private void sharEncodedImage() {
+        if (encodedCompleted == true) {
+            shareImageEncodedText(encoded_image);
+        } else {
+            showMessage(this, null, "encoded do not complete", "ok"
+                    , new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+        }
+    }
+
+    public void saveEncodeTextImage() {
+
+        Thread PerformEncoding = new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
+            public void run() {
+                //saveToInternalStorage(encoded_image,save);
+                saveImage(encoded_image, save, "/textSteganography", EncodeTextActivity.this);
 
-                Thread PerformEncoding = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveToInternalStorage(encoded_image);
-                    }
-                });
-                save = new ProgressDialog(EncodeTextActivity.this);
-                save.setMessage("Saving, Please Wait...");
-                save.setTitle("Saving Image");
-                save.setIndeterminate(false);
-                save.setCancelable(false);
-                save.show();
-                PerformEncoding.start();
+            }
+        });
+        save = new ProgressDialog(EncodeTextActivity.this);
+        save.setMessage("Saving, Please Wait...");
+        save.setTitle("Saving Image");
+        save.setIndeterminate(false);
+        save.setCancelable(false);
+        save.show();
+        PerformEncoding.start();
+
+        Toast.makeText(this, "save in /storage/ emulated/0/TextSteganography", Toast.LENGTH_LONG).show();
+
+
+    }
+
+    @Override
+    public void showErrorMessage() {
+        showMessage(this, null, viewModel.textEncodeErrorMessage, "ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
     }
 
-    public void checkAndRequestPermissions() {
-        int permissionWriteStorage = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int ReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (ReadPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
-        if (permissionWriteStorage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[0]), 1);
-        }
-    }
 
-    private void saveToInternalStorage(Bitmap bitmapImage) {
-        OutputStream fOut;
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "Encoded" + ".PNG"); // the File to save ,
-        try {
-            fOut = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fOut); // saving the Bitmap to a file
-            fOut.flush(); // Not really required
-            fOut.close();
-            save.dismiss();// do not forget to close the stream
-           /* whether_encoded.post(new Runnable() {
-                @Override
-                public void run() {
-                    save.dismiss();
-                }
-            });*/
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
     @Override
     protected EncodeTextBinding getDataBinding() {
         return DataBindingUtil.setContentView(this, R.layout.encode_text);
@@ -192,13 +176,11 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
     }
 
 
-    private void shareImageandText(Bitmap bitmap) {
-        Uri uri = viewModel.getmageToShare(bitmap, this);
+    /*private void shareImageEncodedText(Bitmap bitmap) {
+        Uri uri = getmageToShare(bitmap, this);
         Intent share = new Intent(Intent.ACTION_SEND);
-
         // putting uri of image to be shared
         share.putExtra(Intent.EXTRA_STREAM, uri);
-
         // adding text to share
         share.putExtra(Intent.EXTRA_TEXT, "Sharing Image");
         // Add subject Here
@@ -208,6 +190,6 @@ public class EncodeTextActivity extends BaseActivity<EncodeViewModel, EncodeText
 
         // calling startactivity() to share
         startActivity(Intent.createChooser(share, "Share Via"));
-    }
+    }*/
 
 }

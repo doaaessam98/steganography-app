@@ -4,4 +4,6 @@ public interface navigator {
     public void openGalleryHidden();
 
     public void openGalleryCarrier();
+
+    void showErrorMessage();
 }

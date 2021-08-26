@@ -55,10 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="50dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginRight="50dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="35"
+                android:layout_marginTop="10dp"
+                android:layout_weight="55"
                 android:adjustViewBounds="true"
                 android:background="@drawable/selected_image_background"
                 android:scaleType="fitXY"
@@ -73,7 +72,8 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="100dp"
                 android:layout_marginRight="100dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:layout_weight="7"
                 android:background="@drawable/upload_image_background"
                 android:onClick="@{()->vm.openGalleryToPickImage()}"
@@ -90,10 +90,9 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="50dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginRight="50dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="10"
+                android:layout_weight="9"
                 android:background="@drawable/text_encode_decode_background"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
@@ -131,7 +130,7 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="100dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginRight="100dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="7"
@@ -145,21 +144,6 @@
                 />
 
 
-            <ImageView
-                android:id="@+id/result_image"
-
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginBottom="20dp"
-                android:layout_weight="30"
-                android:adjustViewBounds="true"
-                android:background="@drawable/result_image_decoded"
-                android:scaleType="fitXY"
-
-                />
 
 
         </LinearLayout>

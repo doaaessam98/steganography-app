@@ -1,5 +1,6 @@
 package com.example.steganography.register;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.example.steganography.home.HomeActivity;
 import com.example.steganography.login.Login;
 
 public class Registration extends BaseActivity<RegisterViewModel, ActivityRegistrationBinding> implements RegisterNavigator {
+
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +30,8 @@ public class Registration extends BaseActivity<RegisterViewModel, ActivityRegist
 
             }
         });
+
+
     }
 
     @Override

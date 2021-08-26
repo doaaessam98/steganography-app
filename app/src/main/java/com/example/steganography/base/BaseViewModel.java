@@ -14,7 +14,4 @@ public class BaseViewModel<T> extends AndroidViewModel {
     }
 
 
-
-
-    // public T nn= (T) new Object();
 }

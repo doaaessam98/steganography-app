@@ -3,6 +3,7 @@ package com.example.steganography.register;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -24,12 +25,15 @@ import java.util.regex.Pattern;
 public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
     public ObservableField<String> userName = new ObservableField<>("");
+    public ObservableField<String> textUserNameError = new ObservableField<>("");
+    public ObservableField<String> textPasswordError = new ObservableField<>("");
+    public ObservableField<String> textUserEmailError = new ObservableField<>("");
+    public ObservableField<String> textConfirmPasswordError = new ObservableField<>("");
 
-    public ObservableField<Boolean> invalidUserName = new ObservableField<>(false);
+
     public ObservableField<String> userEmail = new ObservableField<>("");
-    public ObservableField<Boolean> invalidUserEmail = new ObservableField<>(false);
     public ObservableField<String> userPassword = new ObservableField<>("");
-    public ObservableField<Boolean> invalidUserPassword = new ObservableField<>();
+    // public ObservableField<Boolean> invalidUserPassword = new ObservableField<>();
     public ObservableField<String> confirmPassword = new ObservableField<>("");
     public ObservableField<Boolean> errorConfirmPassword = new ObservableField<>(false);
     public ObservableField<Boolean> progress_bar = new ObservableField<>(false);
@@ -47,20 +51,6 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
         //editor = preferences.edit();
     }
 
-    public static boolean isValidEmail(String str) {
-        boolean isValid = true;
-        /*if (Build.VERSION.SDK_INT >= 8) {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(str).matches();
-        }
-        String expression = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        CharSequence inputStr = str;
-        Pattern pattern = Pattern.compile(expression);
-        Matcher matcher = pattern.matcher(inputStr);
-        if (matcher.matches()) {
-            isValid = true;
-        }*/
-        return isValid;
-    }
 
     public void register() {
         Log.e("re", " in register function");
@@ -98,7 +88,7 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
                                     public void onComplete(@NonNull Task<Void> task) {
 
                                         if (task.isSuccessful()) {
-
+                                            holdData();
                                             openMain();
                                             Log.e("nnnnn", "use add to database");
 
@@ -166,25 +156,23 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
 
         Boolean isValid = true;
-        if (isValidUsername(userName.get())) {
+        if (isValidUsername() == false) {
             isValid = false;
 
-            invalidUserName.set(true);
         }
 
-        if (userEmail.get().isEmpty()) {
-            isValid = false;
-            invalidUserEmail.set(true);
-        }
-        if (userPassword.get().isEmpty()) {
+        if (validateEmail() == false) {
             isValid = false;
 
-            invalidUserPassword.set(true);
+        }
+        if (isValidPassword() == false) {
+            isValid = false;
+
 
         }
-        if (!confirmPassword.get().equals(userPassword.get())) {
+        if (isValidConfirmPassword() == false) {
             isValid = false;
-            errorConfirmPassword.set(true);
+
         }
         Log.e("reg", "validation==" + isValid);
 
@@ -192,32 +180,80 @@ public class RegisterViewModel extends BaseViewModel<RegisterNavigator> {
 
     }
 
-    public boolean isValidUsername(String name) {
+    public boolean isValidUsername() {
         //String regex = "^[A-Za-z]\\w{5,10}$";
-        String regex="^[a-zA-Z0-9]\\w{5,10}+([_ -]?[a-zA-Z0-9])*$";
+
+
+        String regex = "^[a-zA-Z0-9]\\w{5,10}+([_ -]?[a-zA-Z0-9])*$";
         Pattern p = Pattern.compile(regex);
-        if (name == null) {
-            invalidUserName.set(true);
+        Matcher m = p.matcher(userName.get());
+
+        if (userName.get().isEmpty()) {
+            textUserNameError.set("uer name cant be empty");
             return false;
+        } else if (m.matches() == false) {
+            textUserNameError.set("user name  must contain 5 to 10 letter");
+
+            return false;
+
+        } else {
+            textUserNameError.set("");
+            return true;
         }
-        Matcher m = p.matcher(name);
-        return m.matches();
     }
 
-    public boolean isValidPassword(final String password) {
 
-        final String PASSWORD_PATTERN = "String = \"(?=.*[0-9a-zA-Z]).{6,}\"";
+    private boolean validateEmail() {
+        if (userEmail.get().isEmpty()) {
+            textUserEmailError.set("Email cant be empty");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(userEmail.get()).matches()) {
+            textUserEmailError.set("Please enter a valid email address");
+
+            return false;
+        } else {
+            textUserEmailError.set("");
+            return true;
+        }
+    }
+
+    public boolean isValidPassword() {
+
+        final String PASSWORD_PATTERN = "String = \"(?=.*[0-9a-zA-Z]).{8,}\"";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
-        Matcher matcher = pattern.matcher(password);
+        Matcher matcher = pattern.matcher(userPassword.get());
 
-        if (password == null) {
-          invalidUserPassword.set(true);
+        if (userPassword.get().isEmpty()) {
+            textPasswordError.set("password can not be empty");
             return false;
+        } else if (matcher.matches() == false) {
+            textPasswordError.set("password too week");
+            return false;
+
+        } else {
+            textPasswordError.set("");
+            return true;
         }
-        return matcher.matches();
+
 
     }
 
+    public boolean isValidConfirmPassword() {
+
+
+        if (confirmPassword.get().isEmpty()) {
+            textConfirmPasswordError.set(" can not be empty");
+            return false;
+        } else if (!confirmPassword.get().equals(userPassword.get())) {
+            textConfirmPasswordError.set("do not mach password");
+            return false;
+
+        } else {
+            textConfirmPasswordError.set("");
+            return true;
+        }
+
+    }
 
     public void openMain() {
 

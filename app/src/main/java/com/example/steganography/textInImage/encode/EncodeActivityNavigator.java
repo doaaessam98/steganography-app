@@ -5,4 +5,5 @@ public interface EncodeActivityNavigator {
     public void openGallery();
 
 
+    void showErrorMessage();
 }

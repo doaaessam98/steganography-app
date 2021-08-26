@@ -21,10 +21,12 @@ import java.io.IOException;
 public class DecodeImageViewModel extends BaseViewModel<DecodeImageNavigator> {
     private static final int PICK_IMAGE = 1;
     public ObservableField<Uri> decodeImage = new ObservableField<>();
-    public ObservableField<String> password = new ObservableField<>(" ");
+    public ObservableField<String> password = new ObservableField<>("");
     public ImageSteganography imageSteganography;
     Uri selectedImage;
     Bitmap original_image;
+    Bitmap result;
+    String error_message;
 
     public DecodeImageViewModel(@NonNull Application application) {
         super(application);
@@ -59,20 +61,42 @@ public class DecodeImageViewModel extends BaseViewModel<DecodeImageNavigator> {
     }
 
     public void startDecode(Activity activity, TextDecodingCallback textDecodingCallback) {
-        //if (secret_key.get() != null) {
-        //  Log.e("ggg", "hh" + secret_key.get());
+
+
         if (selectedImage != null) {
 
-            imageSteganography = new ImageSteganography(password.get().toString(), original_image);
-            TextDecoding textDecoding = new TextDecoding(activity, textDecodingCallback);
-            textDecoding.execute(imageSteganography);
+            if (password.get().toString() != null) {
 
-            // }
+                Log.e("start decode", "hh" + password.get().toString());
+
+         /* stegano  s=new stegano(original_image);
+         s.reveal();
+           result = s.getResultImage();*/
+                imageSteganography = new ImageSteganography(password.get().toString(), original_image);
+                TextDecoding textDecoding = new TextDecoding(activity, textDecodingCallback);
+                textDecoding.execute(imageSteganography);
+                Log.e("null", "starat decode");
+
+
+                // }
+            } else {
+                error_message = "password is null";
+                showErrorMessage();
+
+            }
+
+
         } else {
-            Log.e("null", "passwors=null");
+
+            error_message = "password is null";
+            showErrorMessage();
         }
 
 
     }
 
+    private void showErrorMessage() {
+        navigator.showErrorMessage();
+    }
 }
+

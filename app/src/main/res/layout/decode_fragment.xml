@@ -11,24 +11,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="30dp"
         android:orientation="vertical"
         android:padding="30dp"
         android:weightSum="100"
 
         >
 
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="40"
+            android:adjustViewBounds="true"
+            android:src="@drawable/big_logo" />
+
+        <ImageView
+            android:id="@+id/shadow_icon"
+            android:layout_width="150dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="10"
+            android:adjustViewBounds="true"
+            android:paddingBottom="10dp"
+            android:src="@drawable/shadw" />
+
 
         <Button
             android:id="@+id/open_encode"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="40dp"
-            android:layout_weight="15"
-            android:background="@color/background_bottom_color"
-
+            android:layout_marginTop="20dp"
+            android:layout_weight="20"
+            android:background="@drawable/upload_image_background"
             android:onClick="@{()->vm.goToDecodeTextActivity()}"
-            android:text="Text In Image "
+            android:text="text in image "
+            android:textAllCaps="false"
             android:textColor="@color/text_color"
             android:textSize="30dp"
 
@@ -40,8 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="40dp"
-            android:layout_weight="15"
-            android:background="#47b5be"
+            android:layout_weight="20"
+            android:background="@drawable/upload_image_background"
             android:gravity="center"
             android:onClick="@{()->vm.goToDecodeImageActivity()}"
             android:text="Image In Image "
